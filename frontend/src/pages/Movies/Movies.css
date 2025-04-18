@@ -1,0 +1,384 @@
+/* Import Fonts */
+@import "@fontsource/montserrat";
+@import "@fontsource/montserrat/700.css";
+@import "@fontsource/montserrat/900.css";
+
+/* Apply Fonts Globally */
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Apply Poppins for Titles */
+h1,
+h2,
+h3 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+}
+
+/* Apply Montserrat for Body Text */
+p,
+span,
+button {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+}
+
+/* Netflix Page Base Styling */
+.netflix-page {
+  background-image: url("https://images.pexels.com/photos/378570/pexels-photo-378570.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2") !important;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: white;
+  min-height: 100vh;
+  padding-top: 80px;
+  background-position: center;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Navbar Styling */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: black;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Trending Now Title */
+.trend {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 2;
+}
+
+/* Hero Banner Styling */
+.hero-banner {
+  height: 600px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  position: relative;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Hero Content Box */
+.hero-content {
+  background: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  max-width: 500px;
+  z-index: 2;
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
+
+/* Navigation Buttons */
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.nav-button.left {
+  left: 10px;
+  margin-left: 20px;
+}
+
+.nav-button.right {
+  right: 10px;
+  margin-right: 20px;
+}
+
+.nav-button img {
+  width: 55px;
+  height: 55px;
+}
+
+/* Movies Section */
+.movies-section {
+  padding: 20px;
+}
+
+/* Movies Grid Layout */
+.movies-list {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+/* Movie Card Styling */
+.movie-card {
+  position: relative;
+  background: #222;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+  height: auto; /* Change from fixed height to auto */
+  min-height: 300px; /* Use min-height instead of fixed height */
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Movie Card Hover Effect */
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+/* Movie Poster Image */
+.movie-card img {
+  width: 100%;
+  height: auto; /* Maintain aspect ratio */
+  max-height: 200px; /* Set a max-height to ensure uniformity */
+  border-radius: 5px;
+  object-fit: cover;
+  transition: opacity 0.3s ease-in-out;
+  flex-grow: 0;
+}
+
+.movie-card p.movie-title {
+  margin-top: 10px;
+  font-size: 14px;
+  color: white;
+  opacity: 1; /* Ensure visibility */
+  flex-grow: 1;
+  overflow-wrap: break-word;
+  white-space: normal; /* Override any white-space nowrap from parent containers */
+  display: block; /* Ensure display is block */
+  visibility: visible; /* Ensure visibility */
+}
+
+/* Movie Title */
+.movie-card p {
+  margin-top: 10px;
+  font-size: 16px; /* Increased font size for better visibility */
+}
+
+/* Search Bar Styling */
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 5px 10px;
+  transition: 0.3s ease-in-out;
+}
+
+/* Search Input */
+.search-input {
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  padding-left: 8px;
+  font-size: 14px;
+  width: 120px;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Expand the Search Box When Focused */
+.search-input:focus {
+  width: 200px;
+}
+
+/* Hero Video */
+.hero-banner video {
+  border-radius: 25px;
+}
+
+/* Trending Title */
+h2.trend {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100px;
+  margin-left: 20px;
+  margin-top: 20px;
+  font-size: 20px;
+  color: goldenrod;
+}
+
+.hero-banner h1 {
+  margin-bottom: 10px;
+  font-size: 48px;
+}
+
+p.video-description {
+  margin-bottom: 10px;
+}
+
+/* Genre Section Styling */
+.genre-section {
+  margin-top: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+/* Genre Title Styling */
+.genre-section .genre-title {
+  font-size: 24px; /* Ensure title is prominent */
+  margin-bottom: 15px;
+  color: #e4d00a;
+  position: absolute;
+  top: -35px;
+  left: 40px;
+}
+
+/* Movie Scroll Container Styling */
+.movie-scroll-container {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap;
+  padding-bottom: 15px;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  margin: 0 40px;
+  padding-top: 20px;
+  scroll-behavior: smooth; /* Add smooth scrolling */
+}
+
+/* Transparent Scrollbar */
+.movie-scroll-container::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  background: transparent; /* Make scrollbar invisible */
+}
+
+/* Transparent Scrollbar Track */
+.movie-scroll-container::-webkit-scrollbar-track {
+  background: transparent; /* Make the track invisible */
+}
+
+/* Transparent Scrollbar Thumb */
+.movie-scroll-container::-webkit-scrollbar-thumb {
+  background: transparent; /* Make the thumb invisible */
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.movie-scroll-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Movies List Styling (Inside Scroll Container) */
+.movie-scroll-container .movies-list {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+/* Ensure Movie Cards Stay in Line */
+.movie-scroll-container .movie-card {
+  display: inline-block;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+/* New styles for carousel buttons and layout */
+.movie-carousel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.carousel-button {
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.carousel-button img {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-button.left {
+  left: 0;
+}
+
+.carousel-button.right {
+  right: 0;
+}
+
+/* Adjust the movie scroll container to accommodate the buttons */
+.movie-scroll-container {
+  margin: 0 40px; /* Add margin to the sides to make space for the buttons */
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+/* Align genre title with the movie card */
+.genre-section {
+  position: relative;
+  margin-top: 60px; /* Adjust as needed to give space above the title */
+  padding-top: 40px; /* Add padding to the top of the section */
+}
+
+.genre-section .genre-title {
+    position: relative;
+    top: auto;
+    left: 0;
+    margin-left: 0;
+    margin-bottom: -10px;
+    padding-left: 50px; /* Align with the movie list */
+    color: #e4d00a;
+}
+
+/* Adjustments for movie carousel and scroll container */
+.movie-carousel {
+    margin-left: 20px; /* Align with the movie list */
+    margin-right: 20px;
+}
+
+.movie-scroll-container {
+    margin: 0; /* Remove the default margin */
+}
+
+/* Improve spacing between sections */
+.genre-section:not(:last-child) {
+    margin-bottom: 50px;
+}
