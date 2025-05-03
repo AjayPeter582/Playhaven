@@ -2,8 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ShieldCheck, Monitor } from "lucide-react";
 import { motion } from "framer-motion";
-import { loadStripe } from "@stripe/stripe-js";
-import GooglePayButton from "@google-pay/button-react"
+import GooglePayButton from "@google-pay/button-react";
 
 const Payment = () => {
   const { state } = useLocation();
@@ -14,7 +13,34 @@ const Payment = () => {
     return null;
   }
 
-  const { name, price, quality, resolution, supportedDevices} = state.plan;
+  const { name, price, quality, resolution, supportedDevices } = state.plan;
+
+  const handlePaymentSuccess = async (paymentData) => {
+    try {
+      // Send payment data and selected plan to the backend
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        credentials: "include", // To send the cookie
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ plan: name }), // Send the selected plan
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // If the backend confirms the subscription, show success and navigate
+        alert(`Payment successful for ${name} plan!`);
+        navigate("/dashboard"); // Or navigate to another page
+      } else {
+        alert("Something went wrong with the payment.");
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+      alert("There was an issue processing your payment.");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
@@ -54,60 +80,47 @@ const Payment = () => {
           Choose Payment Method
         </h3>
 
-        {/* Stripe */}
-        <button>
+        {/* Google Pay Button */}
         <GooglePayButton
-  environment="TEST"
-  paymentRequest={{
-    apiVersion: 2,
-    apiVersionMinor: 0,
-    allowedPaymentMethods: [
-      {
-        type: "CARD",
-        parameters: {
-          allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-          allowedCardNetworks: ["MASTERCARD", "VISA"],
-        },
-        tokenizationSpecification: {
-          type: "PAYMENT_GATEWAY",
-          parameters: {
-            gateway: "example",
-            gatewayMerchantId: "exampleGatewayMerchantId",
-          },
-        },
-      },
-    ],
-    merchantInfo: {
-      merchantId: "12345678901234567890",
-      merchantName: "Demo Merchant",
-    },
-    transactionInfo: {
-      totalPriceStatus: "FINAL",
-      totalPriceLabel: "Total",
-      totalPrice: price,
-      currencyCode: "USD",
-      countryCode: "US",
-    },
-  }}
-  onLoadPaymentData={async (paymentData) => {
-    console.log("load payment data", paymentData);
-  
-    const selectedPlan = name;
-    const token = localStorage.getItem("token");
-    alert("Payment successful!!!")
-  
-  }}
-/>
+          environment="TEST"
+          paymentRequest={{
+            apiVersion: 2,
+            apiVersionMinor: 0,
+            allowedPaymentMethods: [
+              {
+                type: "CARD",
+                parameters: {
+                  allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                  allowedCardNetworks: ["MASTERCARD", "VISA"],
+                },
+                tokenizationSpecification: {
+                  type: "PAYMENT_GATEWAY",
+                  parameters: {
+                    gateway: "example",
+                    gatewayMerchantId: "exampleGatewayMerchantId",
+                  },
+                },
+              },
+            ],
+            merchantInfo: {
+              merchantId: "12345678901234567890",
+              merchantName: "Demo Merchant",
+            },
+            transactionInfo: {
+              totalPriceStatus: "FINAL",
+              totalPriceLabel: "Total",
+              totalPrice: price,
+              currencyCode: "USD",
+              countryCode: "US",
+            },
+          }}
+          onLoadPaymentData={async (paymentData) => {
+            // Call function to handle payment success
+            await handlePaymentSuccess(paymentData);
+          }}
+        />
 
-          {/* <CreditCard size={18} /> Pay with Stripe */}
-        </button>
-
-        {/* Razorpay */}
-        {/* <button
-          className="bg-green-500 text-white py-2 px-6 rounded-md w-full hover:bg-green-600 transition font-bold flex items-center justify-center gap-2"
-        >
-          <Monitor size={18} /> Pay with Razorpay
-        </button> */}
+        {/* Other payment methods can go here (Stripe, Razorpay, etc.) */}
 
         <div className="text-gray-400 text-xs mt-6 flex items-center justify-center gap-2">
           <ShieldCheck size={16} />

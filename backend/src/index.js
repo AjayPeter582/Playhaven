@@ -11,8 +11,6 @@ import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
 import { app,server } from "./lib/socket.js";
 
-
-
 const PORT=process.env.PORT;
 const __dirname=path.resolve();
 
@@ -23,7 +21,8 @@ app.use(cors({
     credentials:true,
 })
 );
-import subscriptionRoutes from './routes/subscription.js';
+
+import subscriptionRoutes from './routes/subscription.route.js';
 app.use('/api', subscriptionRoutes);
 
 app.post("/api/update-subscription", (req, res) => {

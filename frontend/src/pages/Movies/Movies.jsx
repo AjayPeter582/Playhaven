@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Movies.css";
 
 // Import animated text components
 import AnimatedText from "../../components/Animations/AnimatedText";
 import AnimatedText2 from "../../components/Animations/AnimatedText2";
-// import AnimatedText3 from "../../components/Animations/AnimatedText3";
 
 // Import videos and arrow images
 import video1 from "../../assets/FC.mp4";
@@ -28,13 +27,16 @@ const genres = [
   { id: 878, name: "Science Fiction" },
 ];
 
-const Movies = ({ searchQuery }) => {
+const Movies = () => {
   const [genreMovies, setGenreMovies] = useState({});
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [hasSearchResults, setHasSearchResults] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const location = useLocation();
 
   const videos = [video1, video2, video3, video4];
   const videoTitles = ["Fight Club", "Need For Speed", "Inception", "Batman v Superman: Dawn of Justice"];
@@ -76,20 +78,25 @@ const Movies = ({ searchQuery }) => {
       setLoading(false);
     }
   };
+  
   const handleShare = async (id) => {
     const shareURL = `${window.location.origin}/movies/${id}`;
     try {
       await navigator.clipboard.writeText(shareURL);
       alert("Link copied to clipboard!");
-      window.location.href = "/homepage";
+      window.location.href = "/HomePage"; 
     } catch (err) {
       console.error("Failed to copy: ", err);
     }
-  }
+  };
 
   // Fetch movies based on search query
   const fetchMoviesBySearch = async (query) => {
-    if (!query) return;
+    if (!query) {
+      setSearchResults([]);
+      setHasSearchResults(false);
+      return;
+    }
     
     setLoading(true);
     setError(null);
@@ -128,18 +135,54 @@ const Movies = ({ searchQuery }) => {
     setCurrentVideoIndex((prevIndex) => (prevIndex - 1 + videos.length) % videos.length);
   };
 
-  // Effect to handle both search and genre-based fetching
+  // Effect to handle search parameter from URL
   useEffect(() => {
-    if (searchQuery) {
-      fetchMoviesBySearch(searchQuery);
+    const params = new URLSearchParams(location.search);
+    const searchParam = params.get('search');
+    
+    if (searchParam) {
+      setSearchQuery(searchParam);
+      fetchMoviesBySearch(searchParam);
     } else {
+      setSearchQuery("");
       setHasSearchResults(false);
       genres.forEach((genre) => {
         fetchMoviesByGenre(genre.id, genre.name);
       });
     }
-  }, [searchQuery]);
+  }, [location.search]);
   
+  // Add event listener for search events from navbar
+  useEffect(() => {
+    const handleSearchEvent = (event) => {
+      const { query } = event.detail;
+      setSearchQuery(query);
+      
+      if (query) {
+        fetchMoviesBySearch(query);
+      } else {
+        setHasSearchResults(false);
+        genres.forEach((genre) => {
+          fetchMoviesByGenre(genre.id, genre.name);
+        });
+      }
+    };
+    
+    window.addEventListener('searchQueryChanged', handleSearchEvent);
+    
+    return () => {
+      window.removeEventListener('searchQueryChanged', handleSearchEvent);
+    };
+  }, []);
+  
+  // Initial data load
+  useEffect(() => {
+    if (!searchQuery) {
+      genres.forEach((genre) => {
+        fetchMoviesByGenre(genre.id, genre.name);
+      });
+    }
+  }, []);
 
   return (
     <div className="netflix-page">
@@ -188,16 +231,25 @@ const Movies = ({ searchQuery }) => {
               <div className="movie-scroll-container" ref={scrollRefs.current[genres.length]} style={{ overflow: 'hidden' }}>
                 <div className="movies-list">
                   {searchResults.map((movie) => (
-                    <Link to={`/movies/${movie.id}`} key={movie.id} className="movie-card">
-                      <img 
-                        src={movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : FALLBACK_IMAGE} 
-                        alt={movie.title}
-                        loading="lazy"
-                      />
-                      <p className="movie-title">
-                        <AnimatedText2 text={`${movie.title} (${movie.release_date ? movie.release_date.split("-")[0] : "Unknown"})`} />
-                      </p>
-                    </Link>
+                    <div key={movie.id} className="movie-card">
+                      <Link to={`/movies/${movie.id}`}>
+                        <img 
+                          src={movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : FALLBACK_IMAGE} 
+                          alt={movie.title}
+                          loading="lazy"
+                        />
+                        <p className="movie-title">
+                          <AnimatedText2 text={`${movie.title} (${movie.release_date ? movie.release_date.split("-")[0] : "Unknown"})`} />
+                        </p>
+                      </Link>
+                      <button
+                        className="share-button"
+                        onClick={() => handleShare(movie.id)}
+                        title="Copy shareable link"
+                      >
+                        🔗
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -224,31 +276,29 @@ const Movies = ({ searchQuery }) => {
               ref={scrollRefs.current[index]} 
               style={{ overflow: 'hidden' }}
             >
-             <div className="movies-list">
-        {genreMovies[genre.name]?.map((movie) => (
-          <div key={movie.id} className="movie-card">
-            <Link to={`/movies/${movie.id}`}>
-              <img
-                src={movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : FALLBACK_IMAGE}
-                alt={movie.title}
-                loading="lazy"
-              />
-              <p className="movie-title">
-                <AnimatedText2 text={`${movie.title} (${movie.release_date ? movie.release_date.split("-")[0] : "Unknown"})`} />
-              </p>
-            </Link>
-
-            <button
-              className="share-button"
-              onClick={() => handleShare(movie.id)}
-              title="Copy shareable link"
-            >
-        🔗
-      </button>
-    </div>
-  ))}
-</div>
-
+              <div className="movies-list">
+                {genreMovies[genre.name]?.map((movie) => (
+                  <div key={movie.id} className="movie-card">
+                    <Link to={`/movies/${movie.id}`}>
+                      <img
+                        src={movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : FALLBACK_IMAGE}
+                        alt={movie.title}
+                        loading="lazy"
+                      />
+                      <p className="movie-title">
+                        <AnimatedText2 text={`${movie.title} (${movie.release_date ? movie.release_date.split("-")[0] : "Unknown"})`} />
+                      </p>
+                    </Link>
+                    <button
+                      className="share-button"
+                      onClick={() => handleShare(movie.id)}
+                      title="Copy shareable link"
+                    >
+                      🔗
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
             <button className="carousel-button right" onClick={() => scrollRefs.current[index].current.scrollLeft += 300}>
               <img src={rightArrow} alt="Next" />

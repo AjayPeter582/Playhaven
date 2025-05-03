@@ -47,10 +47,9 @@ const TVShowDetails = () => {
         
         if (isAnimeShow) {
           // Try to fetch MAL ID for anime (this is a simplified approach)
-          // In a real app, you might want to use a mapping database or API
           try {
-            // This is a placeholder - you would need a proper API or database to map TMDB IDs to MAL IDs
-            // For now, we'll use the TMDB ID as a fallback
+            // Set TMDB ID as MalID for testing purposes
+            // In a real implementation, you would use a proper API or mapping
             setMalId(id); 
           } catch (err) {
             console.error("Failed to fetch MAL ID:", err);
@@ -99,6 +98,15 @@ const TVShowDetails = () => {
       }
     }
     
+    // Additional check: if the show name contains "anime" or common anime terms
+    if (show.name) {
+      const animeTitles = ["anime", "naruto", "one piece", "dragon ball", "doraemon", "pokemon"];
+      const lowerCaseName = show.name.toLowerCase();
+      if (animeTitles.some(term => lowerCaseName.includes(term))) {
+        return true;
+      }
+    }
+    
     return false;
   };
 
@@ -134,8 +142,10 @@ const TVShowDetails = () => {
   // Get streaming URL based on show type
   const getStreamUrl = () => {
     if (isAnime) {
+      // Use the anime streaming URL format
       return `${STREAM_API_URL}/anime/${malId || id}/${selectedEpisode}/${subOrDub}`;
     } else {
+      // Use the regular TV show streaming URL format
       return `${STREAM_API_URL}/tv/${id}/${selectedSeason}/${selectedEpisode}`;
     }
   };
@@ -223,56 +233,56 @@ const TVShowDetails = () => {
             </h2>
             
             <div className="stream-controls">
-              {!isAnime && (
-                <div className="season-selector">
-                  <label>Season:</label>
-                  <select 
-                    value={selectedSeason}
-                    onChange={(e) => {
-                      const newSeason = Number(e.target.value);
-                      setSelectedSeason(newSeason);
-                      setSelectedEpisode(1); // Reset episode to 1 when season changes
-                    }}
-                  >
-                    {showDetails.seasons && showDetails.seasons
-                      .filter(season => season.season_number > 0) // Filter out season 0 (specials)
-                      .map(season => (
-                        <option key={season.season_number} value={season.season_number}>
-                          {season.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              )}
-              
-              <div className="episode-selector">
-                <label>Episode:</label>
-                <select 
-                  value={selectedEpisode}
-                  onChange={(e) => setSelectedEpisode(Number(e.target.value))}
-                >
-                  {Array.from({ length: isAnime ? 
-                    (showDetails.number_of_episodes || 24) : // Use number_of_episodes for anime or default to 24
-                    getEpisodeCount(selectedSeason) // Get correct episode count for the selected season
-                  }, (_, i) => (
-                    <option key={i+1} value={i+1}>Episode {i+1}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {isAnime && (
-                <div className="language-selector">
-                  <label>Language:</label>
-                  <select 
-                    value={subOrDub}
-                    onChange={(e) => setSubOrDub(e.target.value)}
-                  >
-                    <option value="sub">Subbed</option>
-                    <option value="dub">Dubbed</option>
-                  </select>
-                </div>
-              )}
-            </div>
+  {!isAnime && (
+    <div className="season-selector">
+      <label>Season:</label>
+      <select 
+        value={selectedSeason}
+        onChange={(e) => {
+          const newSeason = Number(e.target.value);
+          setSelectedSeason(newSeason);
+          setSelectedEpisode(1); // Reset episode to 1 when season changes
+        }}
+      >
+        {showDetails.seasons && showDetails.seasons
+          .filter(season => season.season_number > 0) // Filter out season 0 (specials)
+          .map(season => (
+            <option key={season.season_number} value={season.season_number}>
+              {season.name}
+            </option>
+          ))}
+      </select>
+    </div>
+  )}
+  
+  <div className="episode-selector">
+    <label>Episode:</label>
+    <select 
+      value={selectedEpisode}
+      onChange={(e) => setSelectedEpisode(Number(e.target.value))}
+    >
+      {Array.from({ length: isAnime ? 
+        (showDetails.number_of_episodes || 24) : // Use number_of_episodes for anime or default to 24
+        getEpisodeCount(selectedSeason) // Get correct episode count for the selected season
+      }, (_, i) => (
+        <option key={i+1} value={i+1}>Episode {i+1}</option>
+      ))}
+    </select>
+  </div>
+  
+  {isAnime && (
+    <div className="language-selector">
+      <label>Language:</label>
+      <select 
+        value={subOrDub}
+        onChange={(e) => setSubOrDub(e.target.value)}
+      >
+        <option value="sub">Subbed</option>
+        <option value="dub">Dubbed</option>
+      </select>
+    </div>
+  )}
+</div>
           </div>
           <div className="video-container">
             <iframe
@@ -342,12 +352,12 @@ const TVShowDetails = () => {
 
                 <div className="actions">
                   <button className="action-button primary" onClick={handleStreamShow}>Watch with Haven</button>
-                  <button className="action-button secondary">
+                  {/* <button className="action-button secondary">
                     Rent UHD ₹{showDetails.popularity > 100 ? '199' : '99'}
                   </button>
                   <button className="action-button tertiary">
                     More purchase options
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="rental-info">
