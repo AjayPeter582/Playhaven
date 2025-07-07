@@ -20,14 +20,8 @@
 - 💬 **Interactive Chat System**: Users can chat, share links, and exchange feedback on videos  
 - 🎬 **Video Upload & Streaming**: Upload and stream videos with smooth playback  
 - ⭐ **User Ratings**: Rate and review content  
-- 🎯 **Personalized Filtering**: Get content recommendations based on preferences  
 - 🛡️ **JWT Authentication**: Secure login and user session management  
-- 📱 **Responsive Design**: Optimized for desktop and mobile screens  
-- ⏬ **Lazy Loading**: Loads content efficiently for better performance  
 - ⚙️ **RESTful API Backend**: Scalable and modular backend design  
-
----
-
 
 ---
 
